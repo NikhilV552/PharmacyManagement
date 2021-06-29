@@ -2,7 +2,7 @@
 #include<gtk/gtk.h>
 #include<string.h>
 #include<stdlib.h>
-GtkWidget *new_med_name,*edit_details,*new_med_id,*new_med_company,*new_med_mfg,*new_med_exp,*new_med_price,*new_med_quantity,*del_entry,*add_cus_entry,*add_emp_entry,*edit_entry_id,*med_name,*med_price,*med_quantity,*med_md,*med_ed, *edit_window,*editfs_window,*editff_window,*cust_bill_id,*tab_quantity,*veri_id_entry,*verci_id_entry;
+GtkWidget *new_med_name,*edit_details,*new_med_id,*new_med_company,*new_med_mfg,*new_med_exp,*new_med_price,*new_med_quantity,*del_entry,*add_cus_entry,*add_emp_entry,*edit_entry_id,*med_name,*med_price,*med_quantity,*med_md,*med_ed, *edit_window,*editfs_window,*editff_window,*cust_bill_id,*tab_quantity,*veri_id_entry,*verci_id_entry,*exit_emp,*exit_cusb;
 GtkWidget *med_found;
 GtkWidget *dis_button;
 GtkWidget *add_button;
@@ -13,6 +13,23 @@ GtkWidget *add_cus_button;
 GtkWidget *add_emp_button;
 GtkWidget *dis_cus_button;
 GtkWidget *buy_cus_med_button;
+//windows
+GtkWidget *add_emp_window;
+GtkWidget *veri_window;
+GtkWidget *veriif_window;
+GtkWidget *add_cus_window;
+GtkWidget *verci_window;
+GtkWidget *verciif_window;
+GtkWidget *dis_window;
+GtkWidget *add_window;
+GtkWidget *delf_window;
+GtkWidget *del_window;
+GtkWidget *cust_bill_window;
+GtkWidget *findf_window;
+GtkWidget *finds_window;
+GtkWidget *gen_bill_window;
+GtkWidget *view_cart_window;
+GtkWidget *winmain;
 void add_employeef();
 void add_emp_buttonf();
 void verify_but_eid();
@@ -20,6 +37,7 @@ void verify_id_login();
 void add_customerf();
 void add_cus_buttonf();
 void verify_cid_login();
+void verify_but_ecid();
 void struct_intialization();
 void display_medicine();
 void copy_medicine();
@@ -37,6 +55,9 @@ void add_cart();
 void add_item_to_cart();
 void generate_bill();
 void view_cart();
+void exit_emo();
+void exit_cus();
+void exit_main();
 void add_employeef(){
     FILE *employee_ids;
     const char *new_emp_id;
@@ -47,13 +68,15 @@ void add_employeef(){
     rewind(employee_ids);
     fprintf(employee_ids,"%s\n",new_id_emp);
     fclose(employee_ids);
+    gtk_window_close(GTK_WINDOW(add_emp_window));
 }
 void add_emp_buttonf(){
-    GtkWidget *add_emp_window;
     add_emp_window=gtk_window_new(GTK_WINDOW_TOPLEVEL);
     GtkWidget *add_emp_table;
     GtkWidget *label,*add_employee_id,*add_emp_id;
     add_emp_table=gtk_table_new(8,10,FALSE);
+    gtk_window_set_default_size(GTK_WINDOW(add_emp_window), 100, 100);
+    gtk_window_set_title(GTK_WINDOW(add_emp_window),"ADD EMPLOYEE WINDOW");
     label=gtk_label_new("VVR PHARMACY");
     add_emp_id=gtk_label_new("Enter the id of the new employee:");
     add_employee_id=gtk_button_new_with_label("ADD EMPLOYEE");
@@ -68,11 +91,12 @@ void add_emp_buttonf(){
     gtk_main();
 }
 void verify_but_eid(){
-    GtkWidget *veri_window;
     veri_window=gtk_window_new(GTK_WINDOW_TOPLEVEL);
     GtkWidget *veri_table;
     GtkWidget *veri_mlabel,*veri_id_label;
     GtkWidget *verify_id;
+    gtk_window_set_default_size(GTK_WINDOW(veri_window), 200, 300);
+    gtk_window_set_title(GTK_WINDOW(veri_window),"EMPLOYEE WINDOW");
     dis_button=gtk_button_new_with_label("Display medicine");
     add_button=gtk_button_new_with_label("Add medicine");
     edit_button=gtk_button_new_with_label("Edit medicine");
@@ -81,10 +105,11 @@ void verify_but_eid(){
     add_cus_button=gtk_button_new_with_label("Add customer");
     add_emp_button=gtk_button_new_with_label("Add employee");
     verify_id=gtk_button_new_with_label("Verify employee id");
+    exit_emp=gtk_button_new_with_label("LOGOUT");
     veri_mlabel=gtk_label_new("EMPLOYEE WINDOW");
     veri_id_label=gtk_label_new("Enter your employee id: ");
     veri_id_entry=gtk_entry_new();
-    veri_table=gtk_table_new(8,10,FALSE);
+    veri_table=gtk_table_new(8,12,FALSE);
     gtk_table_attach_defaults(GTK_TABLE(veri_table),veri_mlabel,0,2,0,1);
     gtk_table_attach_defaults(GTK_TABLE(veri_table),veri_id_label,0,1,1,2);
     gtk_table_attach_defaults(GTK_TABLE(veri_table),veri_id_entry,1,2,1,2);
@@ -96,6 +121,7 @@ void verify_but_eid(){
     gtk_table_attach_defaults(GTK_TABLE(veri_table),buy_med_button,0,2,7,8);
     gtk_table_attach_defaults(GTK_TABLE(veri_table),add_cus_button,0,2,8,9);
     gtk_table_attach_defaults(GTK_TABLE(veri_table),add_emp_button,0,2,9,10);
+    gtk_table_attach_defaults(GTK_TABLE(veri_table),exit_emp,0,2,10,11);
     g_signal_connect(verify_id,"clicked",G_CALLBACK(verify_id_login),NULL);
     gtk_widget_set_sensitive(dis_button,FALSE);
     gtk_widget_set_sensitive(add_button,FALSE);
@@ -104,6 +130,7 @@ void verify_but_eid(){
     gtk_widget_set_sensitive(buy_med_button,FALSE);
     gtk_widget_set_sensitive(add_cus_button,FALSE);
     gtk_widget_set_sensitive(add_emp_button,FALSE);
+    gtk_widget_set_sensitive(exit_emp,FALSE);
     g_signal_connect(dis_button,"clicked",G_CALLBACK(display_medicine),NULL);
     g_signal_connect(del_button,"clicked",G_CALLBACK(delete_button),NULL);
     g_signal_connect(add_button,"clicked",G_CALLBACK(add_medicine),NULL);
@@ -111,6 +138,7 @@ void verify_but_eid(){
     g_signal_connect(add_cus_button,"clicked",G_CALLBACK(add_cus_buttonf),NULL);
     g_signal_connect(add_emp_button,"clicked",G_CALLBACK(add_emp_buttonf),NULL);
     g_signal_connect(buy_med_button,"clicked",G_CALLBACK(customer_billing),NULL);
+    g_signal_connect(exit_emp,"clicked",G_CALLBACK(exit_emo),NULL);
     gtk_container_add(GTK_CONTAINER(veri_window),veri_table);
     gtk_widget_show_all(veri_window);
     gtk_main();
@@ -141,12 +169,14 @@ void verify_id_login(){
     gtk_widget_set_sensitive(buy_med_button,TRUE);
     gtk_widget_set_sensitive(add_cus_button,TRUE);
     gtk_widget_set_sensitive(add_emp_button,TRUE);
+    gtk_widget_set_sensitive(exit_emp,TRUE);
+    gtk_widget_set_sensitive(GTK_ENTRY(veri_id_entry),FALSE);
     }
     else{
     	GtkWidget *veriif_label,*veriif_table;
-    	GtkWidget *veriif_window;
         veriif_window=gtk_window_new(GTK_WINDOW_TOPLEVEL);
-        gtk_window_set_default_size(GTK_WINDOW(veriif_window), 200, 200);
+        gtk_window_set_default_size(GTK_WINDOW(veriif_window), 200, 100);
+        gtk_window_set_title(GTK_WINDOW(veriif_window),"INCORRECT ID");
          veriif_table=gtk_table_new(6,6,FALSE);
          veriif_label=gtk_label_new("Login unsuccessfull");
           gtk_table_attach_defaults(GTK_TABLE(veriif_table),veriif_label,3,5,4,5);
@@ -165,13 +195,15 @@ void add_customerf(){
     rewind(customer_ids);
     fprintf(customer_ids,"%s\n",new_id);
     fclose(customer_ids);
+    gtk_window_close(GTK_WINDOW(add_cus_window));
 }
 void add_cus_buttonf(){
-    GtkWidget *add_cus_window;
     add_cus_window=gtk_window_new(GTK_WINDOW_TOPLEVEL);
     GtkWidget *add_cus_table;
     GtkWidget *label,*add_customer_id,*add_cus_id;
     add_cus_table=gtk_table_new(8,10,FALSE);
+    gtk_window_set_default_size(GTK_WINDOW(add_cus_window), 100, 100);
+    gtk_window_set_title(GTK_WINDOW(add_cus_window),"ADD CUSTOMER ");
     label=gtk_label_new("VVR PHARMACY");
     add_cus_id=gtk_label_new("Enter the id of the new customer:");
     add_customer_id=gtk_button_new_with_label("ADD CUSTOMER");
@@ -186,29 +218,35 @@ void add_cus_buttonf(){
     gtk_main();
 }
 void verify_but_ecid(){
-    GtkWidget *verci_window;
     verci_window=gtk_window_new(GTK_WINDOW_TOPLEVEL);
     GtkWidget *verci_table;
     GtkWidget *verci_mlabel,*verci_id_label;
     GtkWidget *verify_cid;
     dis_cus_button=gtk_button_new_with_label("Display medicine");
     buy_cus_med_button=gtk_button_new_with_label("Buy medicine");
+    gtk_window_set_default_size(GTK_WINDOW(verci_window), 100, 100);
+    gtk_window_set_title(GTK_WINDOW(verci_window),"CUSTOMER WINDOW");
     verify_cid=gtk_button_new_with_label("Verify customer id");
     verci_mlabel=gtk_label_new("CUSTOMER WINDOW");
+    exit_cusb=gtk_button_new_with_label("LOGOUT");
     verci_id_label=gtk_label_new("Enter your customer id: ");
     verci_id_entry=gtk_entry_new();
     verci_table=gtk_table_new(8,10,FALSE);
+    g_signal_connect(exit_cusb,"clicked",G_CALLBACK(exit_cus),NULL);
     gtk_table_attach_defaults(GTK_TABLE(verci_table),verci_mlabel,0,2,0,1);
     gtk_table_attach_defaults(GTK_TABLE(verci_table),verci_id_label,0,1,1,2);
     gtk_table_attach_defaults(GTK_TABLE(verci_table),verci_id_entry,1,2,1,2);
     gtk_table_attach_defaults(GTK_TABLE(verci_table),verify_cid,0,2,2,3);
     gtk_table_attach_defaults(GTK_TABLE(verci_table),dis_cus_button,0,2,3,4);
     gtk_table_attach_defaults(GTK_TABLE(verci_table),buy_cus_med_button,0,2,4,5);
+    gtk_table_attach_defaults(GTK_TABLE(verci_table),exit_cusb,0,2,5,6);
     g_signal_connect(verify_cid,"clicked",G_CALLBACK(verify_cid_login),NULL);
     gtk_widget_set_sensitive(dis_cus_button,FALSE);
     gtk_widget_set_sensitive(buy_cus_med_button,FALSE);
+    gtk_widget_set_sensitive(exit_cusb,FALSE);
     g_signal_connect(dis_cus_button,"clicked",G_CALLBACK(display_medicine),NULL);
     g_signal_connect(buy_cus_med_button,"clicked",G_CALLBACK(customer_billing),NULL);
+    g_signal_connect(exit_cusb,"clicked",G_CALLBACK(exit_cus),NULL);
     gtk_container_add(GTK_CONTAINER(verci_window),verci_table);
     gtk_widget_show_all(verci_window);
     gtk_main();
@@ -234,12 +272,14 @@ void verify_cid_login(){
     if(cres==0){
     gtk_widget_set_sensitive(dis_cus_button,TRUE);
     gtk_widget_set_sensitive(buy_cus_med_button,TRUE);
+    gtk_widget_set_sensitive(exit_cusb,TRUE);
+    gtk_widget_set_sensitive(verci_id_entry,FALSE);
     }
     else{
     	GtkWidget *verciif_label,*verciif_table;
-    	GtkWidget *verciif_window;
         verciif_window=gtk_window_new(GTK_WINDOW_TOPLEVEL);
-        gtk_window_set_default_size(GTK_WINDOW(verciif_window), 200, 200);
+        gtk_window_set_default_size(GTK_WINDOW(verciif_window), 200, 100);
+        gtk_window_set_title(GTK_WINDOW(verciif_window),"INCORRECT ID");
          verciif_table=gtk_table_new(6,6,FALSE);
          verciif_label=gtk_label_new("Login unsuccessfull");
           gtk_table_attach_defaults(GTK_TABLE(verciif_table),verciif_label,3,5,4,5);
@@ -248,8 +288,6 @@ void verify_cid_login(){
 	gtk_main ();
     }
 }
-
-
 struct Medicine{
    int id,price,quantity;
    char medicineName[100],Company[100],Mfg_Date[11],Exp_Date[11];
@@ -289,9 +327,9 @@ void struct_intialization(){
     }
 }
 void display_medicine(){
-	GtkWidget *dis_window;
 	dis_window=gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_default_size(GTK_WINDOW(dis_window), 400, 300);
+	gtk_window_set_title(GTK_WINDOW(dis_window),"STOCK MEDICINE");
 	GtkWidget *medicine_table;
 	medicine_table=gtk_table_new(counter,7,TRUE);
 	GtkWidget *medicinenamemain;
@@ -368,11 +406,12 @@ void copy_medicine(){
 	m[counter].quantity=atoi(medicinequantity);
 	counter++;
 	file_update();
+	gtk_window_close(GTK_WINDOW(add_window));
 }
 void add_medicine(){
-	GtkWidget *add_window;
 	add_window=gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_default_size(GTK_WINDOW(add_window), 200, 300);
+	gtk_window_set_title(GTK_WINDOW(add_window),"UPDATE MEDICINE");
 	GtkWidget *maintitle,*count,*med_name,*med_id,*med_company,*med_mfg,*med_exp,*med_price,*med_quantity;
 	GtkWidget *add_table;
 	GtkWidget *copy_button;
@@ -464,6 +503,8 @@ void edit_medicinef(){
 	if(indexe==-1){
                 GtkWidget *editff_label,*editff_table;
                 editff_window=gtk_window_new(GTK_WINDOW_TOPLEVEL);
+                gtk_window_set_default_size(GTK_WINDOW(editff_window), 100, 100);
+                gtk_window_set_title(GTK_WINDOW(editff_window),"INCORRECT ID");
                 editff_table=gtk_table_new(6,6,FALSE);
                 editff_label=gtk_label_new("Medicine not available with the given id");
                 gtk_table_attach_defaults(GTK_TABLE(editff_table),editff_label,3,5,4,5);
@@ -473,17 +514,17 @@ void edit_medicinef(){
             }
         else{
                 GtkWidget *editfs_label,*editfs_table;
-                //GtkWidget *med_name,*med_price,*med_quantity,*med_md,*med_ed;
     		GtkWidget *med_namel,*med_pricel,*med_quantityl,*med_mdl,*med_edl;
     		GtkWidget *editfs_details;
     		char *mede_name,*mede_md,*mede_ed,*mede_price,*mede_qty;
     		char medq[100],medp[100];
                 editfs_window=gtk_window_new(GTK_WINDOW_TOPLEVEL);
+                gtk_window_set_default_size(GTK_WINDOW(editfs_window), 200, 300);
+                gtk_window_set_title(GTK_WINDOW(editfs_window),"VALID ID");
                 editfs_table=gtk_table_new(10,12,FALSE);
                 editfs_label=gtk_label_new("Medicine available with the given id");
                 editfs_details=gtk_button_new_with_label("EDIT MEDICINE DETAILS");
                 mede_name=m[indexe].medicineName;
-                //oa(m[indexe].quantity,mede_qty,10);
     		sprintf(medq,"%d",m[indexe].quantity);
     		mede_qty=medq;
         	sprintf(medp,"%d",m[indexe].price);
@@ -547,6 +588,8 @@ void edit_medicine(){
     edit_table=gtk_table_new(10,12,FALSE);
     label=gtk_label_new("VVR PHARMACY");
     med_details=gtk_button_new_with_label("GET MEDICINE DETAILS");
+    gtk_window_set_default_size(GTK_WINDOW(edit_window), 100, 100);
+    gtk_window_set_title(GTK_WINDOW(edit_window),"EDIT WINDOW");
     edit_entry_id=gtk_entry_new();
     med_id_label=gtk_label_new("Enter the id of the medicine you want to edit:");
     gtk_table_attach_defaults(GTK_TABLE(edit_table),label,0,2,0,1);
@@ -565,9 +608,22 @@ void delete_medicine(){
     int delete_id,at_index;
     delete_id=atoi(del_med_id);
     at_index=find_medicine_index_id(delete_id);
+    if(at_index==-1){
+    	GtkWidget *delf_label,*delf_table;
+        delf_window=gtk_window_new(GTK_WINDOW_TOPLEVEL);
+        gtk_window_set_default_size(GTK_WINDOW(delf_window), 200, 100);
+        gtk_window_set_title(GTK_WINDOW(delf_window),"INCORRECT ID");
+         delf_table=gtk_table_new(6,6,FALSE);
+         delf_label=gtk_label_new("Medicine not available with the given id");
+          gtk_table_attach_defaults(GTK_TABLE(delf_table),delf_label,3,5,4,5);
+          gtk_container_add(GTK_CONTAINER(delf_window),delf_table);
+	gtk_widget_show_all (delf_window);
+	gtk_main ();
+    }
+    else{
     for (int a = at_index; a < counter; a++)
     {
-        m[a].id=m[a+1].id-1;
+        m[a].id=m[a+1].id;
         strcpy(m[a].medicineName,m[a+1].medicineName);
         strcpy(m[a].Company,m[a+1].Company);
         m[a].price=m[a+1].price;
@@ -575,15 +631,18 @@ void delete_medicine(){
         strcpy(m[a].Exp_Date,m[a+1].Exp_Date);
         m[a].quantity=m[a+1].quantity;
     }
+    }
     counter--;
     file_update();
+    gtk_window_close(GTK_WINDOW(del_window));
 }
 
 void delete_button(){
-    GtkWidget *del_window;
     del_window=gtk_window_new(GTK_WINDOW_TOPLEVEL);
     GtkWidget *del_table;
     GtkWidget *label,*del_medicine,*del_id;
+    gtk_window_set_default_size(GTK_WINDOW(del_window), 100, 100);
+    gtk_window_set_title(GTK_WINDOW(del_window),"DELETE MEDICINE");
     del_table=gtk_table_new(8,10,FALSE);
     label=gtk_label_new("VVR PHARMACY");
     del_id=gtk_label_new("Enter the id of the medicine you want to delete:");
@@ -605,10 +664,12 @@ int cost=0;
 void customer_billing(){
 	num_of_med=0;
 	cost=0;
-    	GtkWidget *cust_bill_window,*cust_bill_table;
+    	GtkWidget *cust_bill_table;
     	GtkWidget *cust_bill_idl;
     	GtkWidget *add_to_cart,*viewcart,*gen_bill;
         cust_bill_window=gtk_window_new(GTK_WINDOW_TOPLEVEL);
+        gtk_window_set_default_size(GTK_WINDOW(cust_bill_window), 100, 100);
+        gtk_window_set_title(GTK_WINDOW(cust_bill_window),"CUSTOMER SHOPPING");
         cust_bill_table=gtk_table_new(6,6,FALSE);
         add_to_cart=gtk_button_new_with_label("ADD TO CART");
         viewcart=gtk_button_new_with_label("VIEW CART");
@@ -636,8 +697,10 @@ void add_cart(){
 	add_cart_idf=atoi(add_cart_id);
 	indexe=find_medicine_index_id(add_cart_idf);
 	if(indexe==-1){
-                GtkWidget *findf_label,*findf_table,*findf_window;
+                GtkWidget *findf_label,*findf_table;
                 findf_window=gtk_window_new(GTK_WINDOW_TOPLEVEL);
+                gtk_window_set_default_size(GTK_WINDOW(findf_window), 100, 100);
+                gtk_window_set_title(GTK_WINDOW(findf_window),"INVALID ID");
                 findf_table=gtk_table_new(6,6,FALSE);
                 findf_label=gtk_label_new("Medicine not available with the given id");
                 gtk_table_attach_defaults(GTK_TABLE(findf_table),findf_label,3,5,4,5);
@@ -646,10 +709,12 @@ void add_cart(){
 		gtk_main ();
             }
         else{
-        	GtkWidget *finds_label,*finds_table,*finds_window,*tab_quantityl,*tab_quantitya,*tab_quantityreq,*cont_button;
+        	GtkWidget *finds_label,*finds_table,*tab_quantityl,*tab_quantitya,*tab_quantityreq,*cont_button;
         	char quantityot[10];
         	sprintf(quantityot,"%d",m[indexe].quantity);
                 finds_window=gtk_window_new(GTK_WINDOW_TOPLEVEL);
+                gtk_window_set_default_size(GTK_WINDOW(finds_window), 200, 200);
+                gtk_window_set_title(GTK_WINDOW(finds_window),"QUANTITY MEDICINE");
                 finds_table=gtk_table_new(6,6,FALSE);
                 finds_label=gtk_label_new("Medicine available with the given id");
                 tab_quantityl=gtk_label_new("The available quantity of the medicine available is :");
@@ -685,13 +750,14 @@ void add_item_to_cart(){
         m[indexe].quantity-=add_cart_qtyf;
         num_of_med++;
 	file_update();
+	gtk_window_close(GTK_WINDOW(finds_window));
 }
 void generate_bill(){
-	GtkWidget *gen_bill_window;
 	gen_bill_window=gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_default_size(GTK_WINDOW(gen_bill_window), 400, 300);
 	GtkWidget *gen_bill_table;
 	gen_bill_table=gtk_table_new(num_of_med+2,7,TRUE);
+	gtk_window_set_title(GTK_WINDOW(gen_bill_window),"FINAL BILL");
 	GtkWidget *medicinenamegb;
         GtkWidget *companygb;
         GtkWidget *Expdategb;
@@ -746,13 +812,14 @@ void generate_bill(){
         gtk_table_attach_defaults(GTK_TABLE(gen_bill_table),pricetgbt,5,6,j+1,j+2);
     	}
     	gtk_container_add(GTK_CONTAINER(gen_bill_window),gen_bill_table);
+    	gtk_window_close(GTK_WINDOW(cust_bill_window));
     	gtk_widget_show_all(gen_bill_window);
     	gtk_main();
 }
 void view_cart(){
-	GtkWidget *view_cart_window;
 	view_cart_window=gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_default_size(GTK_WINDOW(view_cart_window), 400, 300);
+	gtk_window_set_title(GTK_WINDOW(view_cart_window),"SHOPPING CART");
 	GtkWidget *view_cart_table;
 	view_cart_table=gtk_table_new(num_of_med+2,7,TRUE);
 	GtkWidget *medicinenamevc;
@@ -804,28 +871,42 @@ void view_cart(){
     	gtk_widget_show_all(view_cart_window);
     	gtk_main();
 }
+void exit_main(){
+	gtk_window_close(GTK_WINDOW(winmain));
+}
+void exit_cus(){
+	gtk_window_close(GTK_WINDOW(verci_window));
+}
+void exit_emo(){
+	gtk_window_close(GTK_WINDOW(veri_window));
+}
 int main (int argc, char *argv[])
 {
 struct_intialization();
 gtk_init (&argc, &argv);
-GtkWidget *winmain = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+winmain = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 GtkWidget *title;
 GtkWidget *maintable;
-GtkWidget *employee_loginl,*customer_loginl,*employee_loginb,*customer_loginb;
+GtkWidget *employee_loginl,*customer_loginl,*employee_loginb,*customer_loginb,*exitb;
 maintable=gtk_table_new(4,5,FALSE);
 gtk_window_set_position(GTK_WINDOW(winmain),GTK_WIN_POS_CENTER_ALWAYS);
+gtk_window_set_default_size(GTK_WINDOW(winmain), 100, 100);
+gtk_window_set_title(GTK_WINDOW(winmain),"MAIN WINDOW");
 title=gtk_label_new("WELCOME TO VVR PHARMACY");
 employee_loginl=gtk_label_new("Click here to login as an employee");
 customer_loginl=gtk_label_new("Click here to login as a customer");
 customer_loginb=gtk_button_new_with_label("CUSTOMER LOGIN");
 employee_loginb=gtk_button_new_with_label("EMPLOYEE LOGIN");
+exitb=gtk_button_new_with_label("EXIT");
 gtk_table_attach_defaults(GTK_TABLE(maintable),title,0,2,0,1);
 gtk_table_attach_defaults(GTK_TABLE(maintable),employee_loginl,0,1,1,2);
 gtk_table_attach_defaults(GTK_TABLE(maintable),employee_loginb,1,2,1,2);
 gtk_table_attach_defaults(GTK_TABLE(maintable),customer_loginl,0,1,2,3);
 gtk_table_attach_defaults(GTK_TABLE(maintable),customer_loginb,1,2,2,3);
+gtk_table_attach_defaults(GTK_TABLE(maintable),exitb,0,2,3,4);
 g_signal_connect(employee_loginb,"clicked",G_CALLBACK(verify_but_eid),NULL);
 g_signal_connect(customer_loginb,"clicked",G_CALLBACK(verify_but_ecid),NULL);
+g_signal_connect(exitb,"clicked",G_CALLBACK(exit_main),NULL);
 gtk_container_add(GTK_CONTAINER(winmain),maintable);
 gtk_widget_show_all(winmain);
 gtk_main ();
